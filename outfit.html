@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WEARA — Outfit</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── AI Text Block ── */
+    .outfit-ai-block {
+      margin-top: 4px;
+    }
+    .outfit-divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(0,0,0,0.15);
+      margin: 22px 0;
+    }
+
+    /* Loading-Dots */
+    .outfit-loading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 0 8px;
+    }
+    .outfit-loading span.dot {
+      width: 9px;
+      height: 9px;
+      background: var(--pink);
+      border-radius: 50%;
+      animation: loadbounce 1.4s ease-in-out infinite;
+    }
+    .outfit-loading span.dot:nth-child(2) { animation-delay: 0.2s; }
+    .outfit-loading span.dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes loadbounce {
+      0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+      40%           { opacity: 1;   transform: scale(1.2); }
+    }
+    .outfit-loading-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--gray);
+      margin-left: 4px;
+    }
+
+    /* Outfit-Text */
+    .outfit-ai-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 20px;
+      line-height: 1.85;
+      color: #111;
+      max-width: 660px;
+    }
+
+    /* Button-Zeile */
+    .outfit-action-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Neu-Generieren Button */
+    .outfit-regen-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      background: transparent;
+      border: 1.5px solid var(--black);
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .outfit-regen-btn:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    /* Neu Starten Button */
+    .outfit-restart-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      background: var(--pink);
+      color: var(--white);
+      border: 1.5px solid var(--pink);
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .outfit-restart-btn:hover {
+      opacity: 0.85;
+    }
+
+    /* ── Mobile ≤ 600px ── */
+    @media (max-width: 600px) {
+      .outfit-ai-text {
+        font-size: 17px;
+        line-height: 1.75;
+        max-width: 100%;
+      }
+      .outfit-action-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .outfit-regen-btn,
+      .outfit-restart-btn {
+        width: 100%;
+        text-align: center;
+        padding: 14px 20px;
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body id="page-outfit">
+
+  <!-- NAVIGATION -->
+  <div class="nav-wrapper">
+    <div class="info-bar">
+      <span>WEARA / METHODE / 03 OUTFIT</span>
+      <span id="dateTime"></span>
+    </div>
+    <nav class="main-nav">
+      <a href="index.html" class="logo">WEARA</a>
+      <ul class="nav-links">
+        <li><a href="index.html">INDEX</a></li>
+        <li><a href="mood.html" class="active">METHODE</a></li>
+        <li><a href="kontakt.html">KONTAKT</a></li>
+      </ul>
+      <button class="nav-btn" id="langBtn">DE / EN</button>
+    </nav>
+  </div>
+
+  <!-- PAGE CONTENT -->
+  <main class="page">
+    <div class="outfit-layout">
+
+      <!-- LEFT: Weather Panel -->
+      <div class="weather-panel">
+        <div>
+          <div class="weather-temp" id="weatherTemp">—</div>
+          <div class="weather-type" id="weatherType">WIRD GELADEN</div>
+          <div class="weather-desc" id="weatherDesc">Wetterdaten werden<br>abgerufen…</div>
+        </div>
+
+        <div class="weather-stats">
+          <div class="weather-stat">
+            <span class="val" id="weatherWind">—</span>
+            <span class="lbl">KM/H</span>
+          </div>
+          <div class="weather-stat">
+            <span class="val" id="weatherHumidity">—</span>
+            <span class="lbl">% HUM</span>
+          </div>
+          <div class="weather-stat">
+            <span class="val" id="weatherUv">—</span>
+            <span class="lbl">UV</span>
+          </div>
+        </div>
+
+        <div class="weather-duration serif-italic" id="outfitDuration">lädt…</div>
+      </div>
+
+      <!-- RIGHT: Outfit Content -->
+      <div class="outfit-content">
+        <div class="outfit-tag">[ THE LOOK / FW26 / DAILY 001 ]</div>
+
+        <h1 class="outfit-h1">
+          HEUTE: <span class="serif-italic" id="outfitHeadline">analysiert…</span>
+        </h1>
+
+        <!-- AI Outfit-Text -->
+        <div class="outfit-ai-block">
+          <div class="outfit-divider"></div>
+
+          <!-- Loading-Animation -->
+          <div class="outfit-loading" id="outfitLoading">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="outfit-loading-label">ANALYSIERE WETTER + STIL...</span>
+          </div>
+
+          <!-- KI-Empfehlungstext -->
+          <p class="outfit-ai-text" id="outfitRecommendation" style="display:none;"></p>
+
+          <div class="outfit-divider" id="outfitDivider2" style="display:none;"></div>
+          <div class="outfit-action-row" id="outfitActions" style="display:none;">
+            <button class="outfit-regen-btn" id="outfitRegen">↺ NEU GENERIEREN</button>
+            <button class="outfit-restart-btn" id="outfitRestart">← NEU STARTEN</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <a href="daten.html">← ZURÜCK</a>
+    <span class="page-info">04 / 05</span>
+  </div>
+
+  <script src="js/script.js" type="module"></script>
+</body>
+</html>

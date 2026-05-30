@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WEARA — Kontakt</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body id="page-kontakt">
+    <!-- NAVIGATION -->
+    <div class="nav-wrapper">
+      <div class="info-bar">
+        <span>WEARA / KONTAKT</span>
+        <span id="dateTime"></span>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html" class="logo">WEARA</a>
+        <ul class="nav-links">
+          <li><a href="index.html">INDEX</a></li>
+          <li><a href="mood.html">METHODE</a></li>
+          <li><a href="kontakt.html" class="active">KONTAKT</a></li>
+        </ul>
+        <button class="nav-btn" id="langBtn">DE / EN</button>
+      </nav>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <main class="page">
+      <div class="tag-label">hast du ein problem?</div>
+
+      <div class="kontakt-layout">
+        <!-- LEFT: Headline -->
+        <div class="kontakt-left">
+          <h1 class="kontakt-h1">
+            SCHREIB <span class="serif-italic">uns.</span>
+          </h1>
+          <p class="kontakt-sub">
+            — wir freuen uns über <span class="pink">DEINE</span> Nachricht.
+          </p>
+        </div>
+
+        <!-- RIGHT: Form -->
+        <div class="kontakt-right">
+          <form id="kontaktForm" novalidate>
+            <div class="form-field">
+              <label class="field-label" for="name">DEIN NAME</label>
+              <input
+                class="field-input"
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Max Mustermann"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label class="field-label" for="email">DEINE E-MAIL</label>
+              <input
+                class="field-input"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="name@beispiel.ch"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">DEINE ROLLE</label>
+              <div class="role-btns">
+                <button
+                  type="button"
+                  class="role-btn active"
+                  data-role="presse"
+                >
+                  PRESSE
+                </button>
+                <button type="button" class="role-btn" data-role="blogger">
+                  BLOGGER
+                </button>
+                <button type="button" class="role-btn" data-role="partner">
+                  PARTNER
+                </button>
+              </div>
+            </div>
+
+            <p class="mehr-label">· DEINE NACHRICHT</p>
+            <div class="form-field">
+              <textarea
+                class="field-textarea"
+                id="message"
+                name="message"
+                placeholder="Hey WEARA, ich habe eine Frage..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-footer">
+              <p class="privacy-note">deine Daten bleiben bei uns. Immer.</p>
+              <button type="submit" class="btn-black">
+                NACHRICHT SCHICKEN
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <a href="index.html">← ZURÜCK</a>
+      <span class="page-info">05 / 05</span>
+    </div>
+
+    <script src="js/script.js" type="module"></script>
+  </body>
+</html>

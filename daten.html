@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WEARA — Daten</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* ── Step-Nav ── */
+      .step-nav {
+        display: flex;
+        gap: 40px;
+        margin-bottom: 28px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0;
+      }
+      .step-nav a {
+        font-family: 'Space Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-decoration: none;
+        color: #aaa;
+        padding-bottom: 10px;
+        display: block;
+      }
+      .step-nav a.active {
+        color: var(--black);
+        border-bottom: 2px solid var(--pink);
+      }
+
+      /* ── Headline ── */
+      .daten-h1-row {
+        display: flex;
+        align-items: baseline;
+        gap: clamp(10px, 3vw, 48px);   /* skaliert mit Viewport */
+        margin-bottom: clamp(20px, 3vw, 36px);
+        flex-wrap: wrap;               /* bricht um statt zu überlaufen */
+      }
+      .daten-h1-row .d-bold {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(36px, 9vw, 82px);   /* min 36px bei ~400px Viewport */
+        font-weight: 400;
+        line-height: 1;
+      }
+      .daten-h1-row .d-italic {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        font-size: clamp(32px, 8vw, 76px);
+        font-weight: 400;
+        line-height: 1;
+      }
+
+      /* ── Step Labels ── */
+      .step-label {
+        font-family: 'Space Mono', monospace;
+        font-size: 15px;
+        letter-spacing: 0.14em;
+        margin-bottom: 16px;
+        color: var(--black);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .step-label .step-num-box {
+        color: var(--gray);
+      }
+
+      /* ── Gender Buttons ── */
+      .gender-btns {
+        display: flex;
+        gap: 0;
+        margin-bottom: 32px;
+      }
+      .gender-btn {
+        padding: 20px 52px;
+        font-family: 'Space Mono', monospace;
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        cursor: pointer;
+        border: 2px solid var(--black);
+        background: transparent;
+        color: var(--black);
+        position: relative;
+        transition: all 0.15s;
+      }
+      .gender-btn.active {
+        background: var(--black);
+        color: var(--white);
+      }
+      .gender-btn.active::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 10px;
+        background: var(--pink);
+      }
+      .gender-btn.dashed {
+        border-style: dashed;
+      }
+
+      /* ── Location Autocomplete ── */
+      .location-wrap {
+        position: relative;
+        max-width: 520px;
+        margin-bottom: 10px;
+      }
+      .location-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 2px solid var(--black);
+        padding: 16px 20px;
+        background: var(--white);
+      }
+      .location-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        border: 2px solid var(--black);
+        border-top: none;
+        z-index: 200;
+        display: none;
+      }
+      .suggestion-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 13px 20px;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+      .suggestion-item:last-child { border-bottom: none; }
+      .suggestion-item:hover { background: var(--bg); }
+      .sug-name {
+        font-family: 'Space Mono', monospace;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+      .sug-sub {
+        font-family: 'Space Mono', monospace;
+        font-size: 10px;
+        color: var(--gray);
+        letter-spacing: 0.06em;
+        text-align: right;
+      }
+      .suggestion-hint {
+        padding: 11px 20px;
+        font-family: 'Space Mono', monospace;
+        font-size: 10px;
+        color: var(--gray);
+        letter-spacing: 0.1em;
+      }
+      .location-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      .location-name {
+        font-family: 'Space Mono', monospace;
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        flex: 1;
+      }
+      .live-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--pink);
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .live-text {
+        font-family: 'Space Mono', monospace;
+        font-size: 14px;
+        color: var(--pink);
+        letter-spacing: 0.1em;
+      }
+      .use-location {
+        font-family: 'Space Mono', monospace;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        color: var(--gray);
+        cursor: pointer;
+        margin-bottom: 32px;
+        display: block;
+      }
+      .use-location::before { content: '○  '; }
+
+      /* ── Duration ── */
+      .duration-row {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        margin-bottom: 4px;
+      }
+      .duration-num {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 110px;
+        line-height: 1;
+      }
+      .duration-unit {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        font-size: 42px;
+      }
+      .duration-desc {
+        font-family: 'Space Mono', monospace;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        color: var(--gray);
+        margin-bottom: 14px;
+      }
+
+      /* ── Slider ── */
+      .slider-wrap {
+        width: 100%;
+      }
+      .range-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100% !important;
+        max-width: none !important;
+        height: 4px;
+        background: var(--black);
+        outline: none;
+        cursor: pointer;
+        display: block;
+      }
+      .range-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 22px;
+        background: var(--pink);
+        border-radius: 2px;
+        cursor: pointer;
+      }
+      .range-slider::-moz-range-thumb {
+        width: 16px;
+        height: 22px;
+        background: var(--pink);
+        border-radius: 2px;
+        border: none;
+        cursor: pointer;
+      }
+      .slider-marks {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 8px;
+        font-family: 'Space Mono', monospace;
+        font-size: 13px;
+        color: var(--gray);
+        letter-spacing: 0.08em;
+        padding: 0 8px;
+      }
+      .slider-marks span.active-mark {
+        color: var(--pink);
+        font-weight: 700;
+      }
+
+      /* ── Generate Button ── */
+      .generate-btn-wrap {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 140px;
+      }
+      .generate-btn {
+        display: flex;
+        align-items: stretch;
+        text-decoration: none;
+      }
+      .generate-btn span {
+        background: var(--black);
+        color: var(--white);
+        font-family: 'Space Mono', monospace;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        padding: 26px 48px;
+      }
+      .generate-btn .gen-accent {
+        background: var(--pink);
+        width: 18px;
+        padding: 0;
+      }
+
+      /* ── Validierung ── */
+      .location-box.error {
+        border-color: var(--pink) !important;
+        animation: shake 0.35s ease;
+      }
+      @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        20%     { transform: translateX(-6px); }
+        50%     { transform: translateX(6px); }
+        80%     { transform: translateX(-3px); }
+      }
+      .field-error {
+        font-family: 'Space Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        color: var(--pink);
+        margin-top: 6px;
+        margin-bottom: 20px;
+        display: none;
+      }
+      .field-error::before { content: '⚠  '; }
+
+      /* ── Layout — Mobile first: kein padding-left, 1 Spalte ── */
+      .daten-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+        align-items: start;
+      }
+
+      /* Foto standardmässig ausblenden (nur Desktop) */
+      .daten-photo {
+        display: none;
+        width: 100%;
+        height: 920px;
+        background-color: transparent;
+        background-size: contain;
+        background-position: top center;
+        background-repeat: no-repeat;
+        margin-top: -260px;
+      }
+
+      /* ── Desktop ≥ 1000px — 2-Spalten mit Padding ── */
+      @media (min-width: 1000px) {
+        .daten-layout {
+          grid-template-columns: 3fr 2fr;
+          gap: 56px;
+          padding-left: 80px;
+        }
+        .daten-photo { display: block; }
+      }
+
+      /* ── Mobile/Tablet ≤ 999px ── */
+      @media (max-width: 999px) {
+        .step-nav {
+          gap: 16px;
+          overflow-x: auto;
+          padding-bottom: 8px;
+        }
+        /* Step-Labels kleiner — sonst überläuft "WIE LANGE BIST DU UNTERWEGS?" */
+        .step-label { font-size: 11px; letter-spacing: 0.1em; }
+        .gender-btns { flex-wrap: wrap; }
+        .gender-btn {
+          padding: 14px 20px;
+          font-size: 14px;
+          flex: 1;
+          min-width: 80px;
+        }
+        .location-wrap { max-width: 100%; }
+        .duration-num  { font-size: 80px; }
+        .generate-btn-wrap {
+          margin-top: 48px;
+          justify-content: stretch;
+        }
+        .generate-btn {
+          width: 100%;
+        }
+        .generate-btn span {
+          font-size: 16px;
+          padding: 20px 28px;
+          flex: 1;
+          text-align: center;
+        }
+        .slider-wrap { width: 100%; }
+      }
+    </style>
+  </head>
+  <body id="page-daten">
+
+    <!-- NAVIGATION -->
+    <div class="nav-wrapper">
+      <div class="info-bar">
+        <span>WEARA® / ISSUE 001 / FW 26 — DRESS THE WEATHER, NOT THE CALENDAR</span>
+        <span id="dateTime"></span>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html" class="logo">WEARA</a>
+        <ul class="nav-links">
+          <li><a href="index.html">INDEX</a></li>
+          <li><a href="mood.html" class="active">METHODE</a></li>
+          <li><a href="kontakt.html">KONTAKT</a></li>
+        </ul>
+        <button class="nav-btn" id="langBtn">DE / EN</button>
+      </nav>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <main class="page">
+
+      <!-- Sub-Step Navigation -->
+      <nav class="step-nav">
+        <a href="mood.html">[ 01 ] STIMMUNG</a>
+        <a href="daten.html" class="active">[ 02 ] DU</a>
+        <a href="outfit.html">[ 03 ] OUTFIT</a>
+      </nav>
+
+      <div class="tag-label">[ TELL US WHO YOU ARE ]</div>
+      <div class="tag-label-line" style="margin-bottom: 20px;"></div>
+
+      <!-- Headline: alle drei Wörter in einer Zeile -->
+      <div class="daten-h1-row">
+        <span class="d-bold">DEINE</span>
+        <span class="d-italic">data,</span>
+        <span class="d-bold">bitte.</span>
+      </div>
+
+      <div class="daten-layout">
+
+        <!-- LEFT: Form -->
+        <div>
+
+          <!-- Step 01: Gender -->
+          <div class="step-label">
+            <span class="step-num-box">[ 01 ]</span> DU BIST...
+          </div>
+          <div class="gender-btns">
+            <button class="gender-btn active" data-value="frau">FRAU</button>
+            <button class="gender-btn" data-value="mann">MANN</button>
+            <button class="gender-btn dashed" data-value="divers">DIVERS</button>
+          </div>
+
+          <!-- Step 02: Location -->
+          <div class="step-label">
+            <span class="step-num-box">[ 02 ]</span> WO BIST DU?
+          </div>
+          <div class="location-wrap">
+            <div class="location-box">
+              <span class="location-icon">◎</span>
+              <input
+                type="text"
+                id="locationText"
+                placeholder="STADT TIPPEN..."
+                class="location-name"
+                autocomplete="off"
+                style="border:none; outline:none; background:transparent; width:100%; font-family:'Space Mono',monospace; font-size:17px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; cursor:text;"
+              />
+              <span class="live-dot"></span>
+              <span class="live-text">LIVE</span>
+            </div>
+            <div class="location-suggestions" id="locationSuggestions"></div>
+          </div>
+          <span class="use-location" id="getLocation">USE CURRENT LOCATION</span>
+          <p class="field-error" id="locationError">STANDORT BITTE EINGEBEN</p>
+
+          <!-- Step 03: Duration -->
+          <div class="step-label">
+            <span class="step-num-box">[ 03 ]</span> WIE LANGE BIST DU UNTERWEGS?
+          </div>
+          <div class="duration-row">
+            <span class="duration-num" id="durationNum">04</span>
+            <span class="duration-unit serif-italic">Stunden</span>
+          </div>
+          <div class="duration-desc" id="durationDesc">~ A LONG AFTERNOON</div>
+
+          <div class="slider-wrap">
+            <input type="range" class="range-slider" id="durationSlider" min="1" max="24" value="4">
+            <div class="slider-marks">
+              <span>1H</span>
+              <span>6H</span>
+              <span>12H</span>
+              <span>18H</span>
+              <span>24H</span>
+            </div>
+          </div>
+          <p class="field-error" id="durationError">MINDESTENS 1 STUNDE ANGEBEN</p>
+
+          <!-- Generate Button -->
+          <div class="generate-btn-wrap">
+            <div id="generateBtn" class="generate-btn" style="cursor:pointer;">
+              <span>GENERATE → 03</span>
+              <div class="gen-accent"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: Image -->
+        <div>
+          <div class="daten-photo" style="background-image: url('img/daten.png');"></div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- BOTTOM NAV / FOOTER -->
+    <div class="bottom-nav">
+      <a href="mood.html">← BACK</a>
+      <span class="page-info">© WEARA · BUILT IN CH</span>
+    </div>
+
+    <script src="js/script.js" type="module"></script>
+  </body>
+</html>

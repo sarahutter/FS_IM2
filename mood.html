@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WEARA — Mood</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body id="page-mood">
+
+  <!-- NAVIGATION -->
+  <div class="nav-wrapper">
+    <div class="info-bar">
+      <span>WEARA / METHODE / 01 MOOD</span>
+      <span id="dateTime"></span>
+    </div>
+    <nav class="main-nav">
+      <a href="index.html" class="logo">WEARA</a>
+      <ul class="nav-links">
+        <li><a href="index.html">INDEX</a></li>
+        <li><a href="mood.html" class="active">METHODE</a></li>
+        <li><a href="kontakt.html">KONTAKT</a></li>
+      </ul>
+      <button class="nav-btn" id="langBtn">DE / EN</button>
+    </nav>
+  </div>
+
+  <!-- PAGE CONTENT -->
+  <main class="page">
+
+    <div class="tag-label">[ PICK A MOOD ]</div>
+
+    <h1 class="mood-h1">DRESS A MOOD.</h1>
+    <p class="mood-subline">— pick one. change it tomorrow.</p>
+
+    <div class="mood-cards">
+
+      <div class="mood-card" data-mood="elegant">
+        <div class="mood-card-photo" style="background-image: url('img/elegance.png');"></div>
+        <div class="mood-card-label">elegant.</div>
+      </div>
+
+      <div class="mood-card" data-mood="sportlich">
+        <div class="mood-card-photo" style="background-image: url('img/sporty_01.png');"></div>
+        <div class="mood-card-label">sportlich.</div>
+      </div>
+
+      <div class="mood-card" data-mood="casual">
+        <div class="mood-card-photo" style="background-image: url('img/casual.png');"></div>
+        <div class="mood-card-label">casual.</div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <a href="index.html">← ZURÜCK</a>
+    <span class="page-info">02 / 05</span>
+    <a href="daten.html" class="btn-primary" style="padding: 10px 20px;">WEITER →</a>
+  </div>
+
+  <script src="js/script.js" type="module"></script>
+</body>
+</html>
